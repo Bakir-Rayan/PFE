@@ -6,6 +6,9 @@ Servo servo;
 Servo servo2;
 int angle = 0;  // servo position in degrees
 
+// serial control
+int val;
+
 // Motor AD connections
 int enA = 9;
 int in1 = 8;
@@ -24,6 +27,8 @@ int in7 = 5;
 int in8 = 4;
 
 void setup() {
+
+  Serial.begin(9600);
 
   servo.attach(servoPin);
   servo2.attach(servoPin2);
@@ -54,3 +59,15 @@ void setup() {
 }
 
 
+void loop() {
+  if (Serial.available() > 0){
+    val = Serial.read();
+    Serial.write("\n");
+    if(val==1){
+      Serial.write("ON");
+      }
+    if(val==0){
+      Serial.write("OFF");
+      }
+  }
+}
