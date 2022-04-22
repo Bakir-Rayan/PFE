@@ -61,8 +61,12 @@ void setup() {
 // need some changes //
 void loop() {
   if (Serial.available() > 0){
-    //val = Serial.read(); // change it to table
-    //
+    //val = Serial.read(); ** change it to table **
+
+    
+    /* servo control */
+    // servo.write(angle);
+    // servo2.write(angle2);
   }
 }
 
