@@ -79,23 +79,31 @@ void For_Backward(int speed, int direction) {
 
   // go forward
   if (direction==1) {
+    // motor AD
     digitalWrite(in1, HIGH);
     digitalWrite(in2, LOW);
+    // motor AG
     digitalWrite(in3, HIGH);
     digitalWrite(in4, LOW);
+    // motor DD
     digitalWrite(in5, HIGH);
     digitalWrite(in6, LOW);
+    // motor DG
     digitalWrite(in7, HIGH);
     digitalWrite(in8, LOW);
   }
   // go backward
   if (direction==0) {
+    // motor AD
     digitalWrite(in1, LOW);
     digitalWrite(in2, HIGH);
+    // motor AG
     digitalWrite(in3, LOW);
     digitalWrite(in4, HIGH);
+    // motor DD
     digitalWrite(in5, LOW);
     digitalWrite(in6, HIGH);
+    // motor DG
     digitalWrite(in7, LOW);
     digitalWrite(in8, HIGH);      
   }
@@ -126,17 +134,17 @@ void LeftRight(int speed, int direction) {
   // go right
   if (direction==0) {
     // motor AD
-    digitalWrite(in1, HIGH);
-    digitalWrite(in2, LOW);
+    digitalWrite(in1, LOW);
+    digitalWrite(in2, HIGH);
     // motor AG
-    digitalWrite(in3, LOW);
-    digitalWrite(in4, HIGH);
+    digitalWrite(in3, HIGH);
+    digitalWrite(in4, LOW);
     // motor DD
-    digitalWrite(in5, LOW);
-    digitalWrite(in6, HIGH);
+    digitalWrite(in5, HIGH);
+    digitalWrite(in6, LOW);
     // motor DG
-    digitalWrite(in7, HIGH);
-    digitalWrite(in8, LOW);      
+    digitalWrite(in7, LOW);
+    digitalWrite(in8, HIGH);      
   }
 }
 
@@ -166,21 +174,21 @@ void LeftDiagonal(int speed, int direction) {
   if (direction==0) {
     // motor AD
     digitalWrite(in1, LOW);
-    digitalWrite(in2, HIGH);
+    digitalWrite(in2, LOW);
     // motor AG
     digitalWrite(in3, LOW);
-    digitalWrite(in4, LOW);
+    digitalWrite(in4, HIGH);
     // motor DD
     digitalWrite(in5, LOW);
-    digitalWrite(in6, LOW);
+    digitalWrite(in6, HIGH);
     // motor DG
     digitalWrite(in7, LOW);
-    digitalWrite(in8, HIGH);      
+    digitalWrite(in8, LOW);      
   }
 }
 
 // right diagonal "/" forward or backward //
-void RightRight(int speed, int direction) {
+void RightDiagonal(int speed, int direction) {
   analogWrite(enA, 0);
 	analogWrite(enB, speed);  
   analogWrite(enC, speed);
@@ -205,16 +213,16 @@ void RightRight(int speed, int direction) {
   if (direction==0) {
     // motor AD
     digitalWrite(in1, LOW);
-    digitalWrite(in2, LOW);
+    digitalWrite(in2, HIGH);
     // motor AG
     digitalWrite(in3, LOW);
-    digitalWrite(in4, HIGH);
+    digitalWrite(in4, LOW);
     // motor DD
     digitalWrite(in5, LOW);
-    digitalWrite(in6, HIGH);
+    digitalWrite(in6, LOW);
     // motor DG
     digitalWrite(in7, LOW);
-    digitalWrite(in8, LOW);      
+    digitalWrite(in8, HIGH);      
   }
 }
 
@@ -246,8 +254,8 @@ void Rotation(int speed, int direction) {
     digitalWrite(in1, HIGH);
     digitalWrite(in2, LOW);
     // motor AG
-    digitalWrite(in3, HIGH);
-    digitalWrite(in4, LOW);
+    digitalWrite(in3, LOW);
+    digitalWrite(in4, HIGH);
     // motor DD
     digitalWrite(in5, HIGH);
     digitalWrite(in6, LOW);
@@ -264,26 +272,44 @@ void Curve(int speed, int direction) {
   analogWrite(enC, speed);
 	analogWrite(enD, speed);
 
-  // go forward left or right 
+  // go forward right 
   if (direction==1) {
+    analogWrite(enA, speed/2);
+    analogWrite(enB, speed);  
+    analogWrite(enC, speed/2);
+    analogWrite(enD, speed);
+
+    // motor AD
     digitalWrite(in1, HIGH);
     digitalWrite(in2, LOW);
+    // motor AG
     digitalWrite(in3, HIGH);
     digitalWrite(in4, LOW);
+    // motor DD
     digitalWrite(in5, HIGH);
     digitalWrite(in6, LOW);
+    // motor DG
     digitalWrite(in7, HIGH);
     digitalWrite(in8, LOW);
   }
-  // go backward left or right
+  // go forward left
   if (direction==0) {
-    digitalWrite(in1, LOW);
-    digitalWrite(in2, HIGH);
-    digitalWrite(in3, LOW);
-    digitalWrite(in4, HIGH);
-    digitalWrite(in5, LOW);
-    digitalWrite(in6, HIGH);
-    digitalWrite(in7, LOW);
-    digitalWrite(in8, HIGH);      
+    analogWrite(enA, speed);
+    analogWrite(enB, speed/2);  
+    analogWrite(enC, speed);
+    analogWrite(enD, speed/2);
+
+    // motor AD
+    digitalWrite(in1, HIGH);
+    digitalWrite(in2, LOW);
+    // motor AG
+    digitalWrite(in3, HIGH);
+    digitalWrite(in4, LOW);
+    // motor DD
+    digitalWrite(in5, HIGH);
+    digitalWrite(in6, LOW);
+    // motor DG
+    digitalWrite(in7, HIGH);
+    digitalWrite(in8, LOW);      
   }
 }
