@@ -4,7 +4,6 @@ int servoPin = 9;
 int servoPin2 = 9;
 Servo servo;
 Servo servo2;
-int angle = 0;  // servo position in degrees //
 
 // serial control //
 int val[5];
@@ -60,18 +59,37 @@ void setup() {
 
 // need some changes //
 void loop() {
-  if (Serial.available() > 0){
-    //val = Serial.read(); ** change it to table **
 
-    
-    /* servo control */
-    // servo.write(angle);
-    // servo2.write(angle2);
+  //val = Serial.read(); ** change it to table ** // done
+  if(Serial.available()) {
+    for (int i = 0; i < 5; i++) {
+      val[i] = Serial.read();
+    }    
   }
+  switch (val[0]) {
+  case 1:
+    For_Backward(val[2], val[1]);
+  case 2:
+    LeftRight(val[2], val[1]);
+  case 3:
+    LeftDiagonal(val[2], val[1]);
+  case 4:
+    RightDiagonal(val[2], val[1]);
+  case 5:
+    Rotation(val[2], val[1]);
+  case 6:
+    Curve(val[2], val[1]);
+  case 7:
+    Stop();
+}  
+  /* servo control */
+  servo.write(val[3]);
+  servo2.write(val[4]);
+  
 }
 
 // forward or backward //
-void For_Backward(int speed, int direction) {
+void For_Backward(int speed, int direction)/* 1 */ {
   analogWrite(enA, speed);
 	analogWrite(enB, speed);  
   analogWrite(enC, speed);
@@ -110,7 +128,7 @@ void For_Backward(int speed, int direction) {
 }
 
 // left or right //
-void LeftRight(int speed, int direction) {
+void LeftRight(int speed, int direction)/* 2 */ {
   analogWrite(enA, speed);
 	analogWrite(enB, speed);  
   analogWrite(enC, speed);
@@ -149,7 +167,7 @@ void LeftRight(int speed, int direction) {
 }
 
 // left diagonal "\" forward or backward //
-void LeftDiagonal(int speed, int direction) {
+void LeftDiagonal(int speed, int direction)/* 3 */ {
   analogWrite(enA, speed);
 	analogWrite(enB, 0);  
   analogWrite(enC, 0);
@@ -188,7 +206,7 @@ void LeftDiagonal(int speed, int direction) {
 }
 
 // right diagonal "/" forward or backward //
-void RightDiagonal(int speed, int direction) {
+void RightDiagonal(int speed, int direction)/* 4 */ {
   analogWrite(enA, 0);
 	analogWrite(enB, speed);  
   analogWrite(enC, speed);
@@ -227,7 +245,7 @@ void RightDiagonal(int speed, int direction) {
 }
 
 // rotate 350° clockwise or anticlockwise
-void Rotation(int speed, int direction) {
+void Rotation(int speed, int direction)/* 5 */ {
   analogWrite(enA, speed);
 	analogWrite(enB, speed);  
   analogWrite(enC, speed);
@@ -266,11 +284,7 @@ void Rotation(int speed, int direction) {
 }
 
 // curve depend on the speed of the motors
-void Curve(int speed, int direction) {
-  analogWrite(enA, speed);
-	analogWrite(enB, speed);  
-  analogWrite(enC, speed);
-	analogWrite(enD, speed);
+void Curve(int speed, int direction)/* 6 */ {
 
   // go forward right 
   if (direction==1) {
@@ -312,4 +326,25 @@ void Curve(int speed, int direction) {
     digitalWrite(in7, HIGH);
     digitalWrite(in8, LOW);      
   }
+}
+
+// stop the robot
+void Stop()/* 7 */ {
+  analogWrite(enA, 0);
+  analogWrite(enB, 0);  
+  analogWrite(enC, 0);
+  analogWrite(enD, 0);
+
+  // motor AD
+  digitalWrite(in1, LOW);
+  digitalWrite(in2, LOW);
+  // motor AG
+  digitalWrite(in3, LOW);
+  digitalWrite(in4, LOW);
+  // motor DD
+  digitalWrite(in5, LOW);
+  digitalWrite(in6, LOW);
+  // motor DG
+  digitalWrite(in7, LOW);
+  digitalWrite(in8, LOW);
 }
