@@ -1,7 +1,7 @@
 #include <Servo.h>
 
-int servoPin = 9;
-int servoPin2 = 9;
+int servoPin = 6;
+int servoPin2 = 5;
 Servo servo;
 Servo servo2;
 
@@ -10,20 +10,20 @@ int val[5];
 
 // Motor AD connections //
 int enA = 9;
-int in1 = 8;
-int in2 = 7;
+int in1 = A1;
+int in2 = A0;
 // Motor AG connections //
 int enB = 3;
-int in3 = 5;
+int in3 = 2;
 int in4 = 4;
 // Motor DD connections //
-int enC = 9;
-int in5 = 8;
-int in6 = 7;
+int enC = 11;
+int in5 = 13;
+int in6 = 12;
 // Motor DG connections //
-int enD = 3;
-int in7 = 5;
-int in8 = 4;
+int enD = 10;
+int in7 = 8;
+int in8 = 7;
 
 void setup() {
 
