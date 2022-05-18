@@ -1,12 +1,14 @@
 #include <Servo.h>
+#include "SerialTransfer.h"
+
+SerialTransfer myTransfer;
 
 int servoPin = 6;
-int servoPin2 = 5;
 Servo servo;
-Servo servo2;
 
-// serial control //
-int val[5];
+struct __attribute__((packed)) STRUCT {
+  long val[4];
+} command;
 
 // Motor AD connections //
 int enA = 9;
@@ -27,10 +29,10 @@ int in8 = 7;
 
 void setup() {
 
-  Serial.begin(9600);
+  Serial.begin(115200);
+  myTransfer.begin(Serial);
 
   servo.attach(servoPin);
-  servo2.attach(servoPin2);
 
 	// Set all the motor control pins to outputs
 	pinMode(enA, OUTPUT);
@@ -61,31 +63,31 @@ void setup() {
 void loop() {
 
   //val = Serial.read(); ** change it to table ** // done
-  if(Serial.available()) {
-    for (int i = 0; i < 5; i++) {
-      val[i] = Serial.read();
-    }    
+  if(myTransfer.available())
+  {
+    // use this variable to keep track of how many
+    // bytes we've processed from the receive buffer
+    uint16_t recSize = 0;
+    recSize = myTransfer.rxObj(command, recSize);
   }
-  switch (val[0]) {
-  case 1:
-    For_Backward(val[2], val[1]);
-  case 2:
-    LeftRight(val[2], val[1]);
-  case 3:
-    LeftDiagonal(val[2], val[1]);
-  case 4:
-    RightDiagonal(val[2], val[1]);
-  case 5:
-    Rotation(val[2], val[1]);
-  case 6:
-    Curve(val[2], val[1]);
-  case 7:
-    Stop();
-}  
+  switch (command.val[0]) {
+    case 1:
+      For_Backward(command.val[2], command.val[1]);
+    case 2:
+      LeftRight(command.val[2], command.val[1]);
+    case 3:
+      LeftDiagonal(command.val[2], command.val[1]);
+    case 4:
+      RightDiagonal(command.val[2], command.val[1]);
+    case 5:
+      Rotation(command.val[2], command.val[1]);
+    case 6:
+      Curve(command.val[2], command.val[1]);
+    case 7:
+      Stop();
+  }  
   /* servo control */
-  servo.write(val[3]);
-  servo2.write(val[4]);
-  
+  servo.write(command.val[3]);
 }
 
 // forward or backward //
