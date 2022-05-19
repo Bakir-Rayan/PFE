@@ -45,6 +45,9 @@ def get_motor_func(cx):
     elif cx <= 50:
         return [7,8,9]
 
+def speed()
+    pass
+
 def read_qr(detector, img):
     detector = detector
     data, bbox, straight_qrcode = detector.detectAndDecode(img)
