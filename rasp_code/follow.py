@@ -66,32 +66,61 @@ while True:
         elif data == "YELLOW ZONE":
             while True:
                 sendSize = 0
-                print("yellow")
-                sleep(2)
-                print("sleep 2s")
-                list_ = [1, 3, 4]
+                list_ = [7, 0, 0, 0]
                 sendSize += link.tx_obj(list_)
                 link.send(sendSize)
-                print("sent")
-                #contours, mask = yellow_mask(hsv)
-                #frame, cx = get_contours(contours, frame)
-                #print(get_motor_func(cx))
+                s = [5, 1, 255, 0]
+                sendSize=0
+                sendSize += link.tx_obj(s)
+                link.send(sendSize)
+                contours, mask = yellow_mask(hsv)
+                frame, cx = get_contours(contours, frame)
+                if cx is not None:
+                    s = get_motor_func(cx)
+                    sendSize += link.tx_obj(s)
+                    link.send(sendSize)
+                else:
+                    break
+
             
         elif data == "RED ZONE":
             while True:
                 sendSize = 0
+                list_ = [7, 0, 0, 0]
+                sendSize += link.tx_obj(list_)
+                link.send(sendSize)
+                s = [5, 1, 255, 0]
+                sendSize=0
+                sendSize += link.tx_obj(s)
+                link.send(sendSize)
                 contours, mask = red_mask(hsv)
                 frame, cx = get_contours(contours, frame)
-                print(get_motor_func(cx))
+                if cx is not None:
+                    s = get_motor_func(cx)
+                    sendSize += link.tx_obj(s)
+                    link.send(sendSize)
+                else:
+                    break
 
         elif data == "BLUE ZONE":
             while True:
                 sendSize = 0
+                list_ = [7, 0, 0, 0]
+                sendSize += link.tx_obj(list_)
+                link.send(sendSize)
+                s = [5, 1, 255, 0]
+                sendSize=0
+                sendSize += link.tx_obj(s)
+                link.send(sendSize)
                 contours, mask = blue_mask(hsv)
                 frame, cx = get_contours(contours, frame)
-                print(get_motor_func(cx))
-        else:
-            pass
+                if cx is not None:
+                    s = get_motor_func(cx)
+                    sendSize += link.tx_obj(s)
+                    link.send(sendSize)
+                else:
+                    break
+    
         
     cv.namedWindow("Frame",cv.WINDOW_NORMAL)
     cv.imshow("Frame",frame)
