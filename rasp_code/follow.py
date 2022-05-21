@@ -18,30 +18,54 @@ while True:
     ret, frame = cap.read()
     frame = frame[60:120, 0:160]
     hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
-    
-    link.send([7,0,0,180])
+
+    sendSize += link.tx_obj([7,0,0,180])
+    link.send(sendSize)
+    sleep(1)
     data = read_qr(detector,frame)
     if data is not None:
+        sendSize = 0
         link.send([7,1,0,0])
+
         if data == "start/yellow":
             while True:
+                sendSize = 0
                 contours, mask = yellow_mask(hsv)
                 frame, cx = get_contours(contours, frame)
                 if cx is not None:
-                    print(get_motor_func(cx))
+                    s = get_motor_func(cx)
+                    sendSize += link.tx_obj(s)
+                    link.send(sendSize)
+                else:
+                    break
 
         elif data == "start/red":
             while True:
+                sendSize = 0
                 contours, mask = red_mask(hsv)
                 frame, cx = get_contours(contours, frame)
-                print(get_motor_func(cx))
+                if cx is not None:
+                    s = get_motor_func(cx)
+                    sendSize += link.tx_obj(s)
+                    link.send(sendSize)
+                else:
+                    break
+
         elif data == "start/blue":
             while True:
+                sendSize = 0
                 contours, mask = blue_mask(hsv)
                 frame, cx = get_contours(contours, frame)
-                print(get_motor_func(cx))
+                if cx is not None:
+                    s = get_motor_func(cx)
+                    sendSize += link.tx_obj(s)
+                    link.send(sendSize)
+                else:
+                    break
+
         elif data == "YELLOW ZONE":
             while True:
+                sendSize = 0
                 print("yellow")
                 sleep(2)
                 print("sleep 2s")
@@ -55,11 +79,14 @@ while True:
             
         elif data == "RED ZONE":
             while True:
+                sendSize = 0
                 contours, mask = red_mask(hsv)
                 frame, cx = get_contours(contours, frame)
                 print(get_motor_func(cx))
+
         elif data == "BLUE ZONE":
             while True:
+                sendSize = 0
                 contours, mask = blue_mask(hsv)
                 frame, cx = get_contours(contours, frame)
                 print(get_motor_func(cx))
