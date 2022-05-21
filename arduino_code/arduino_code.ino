@@ -31,7 +31,7 @@ void setup() {
 
   Serial.begin(115200);
   myTransfer.begin(Serial);
-
+  servo.write(0);   
   servo.attach(servoPin);
 
 	// Set all the motor control pins to outputs

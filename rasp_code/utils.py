@@ -39,13 +39,13 @@ def get_contours(contours, frame):
 
 def get_motor_func(cx):
     if cx >= 120:
-        return [1,2,3]
+        return [2,1,speed(cx),0]
     elif cx < 120 and cx > 50:
-        return [4,5,6]
+        return [1,1,speed(cx),0]
     elif cx <= 50:
-        return [7,8,9]
+        return [2,0,speed(cx),0]
 
-def speed()
+def speed(cx):
     pass
 
 def read_qr(detector, img):
