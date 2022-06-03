@@ -18,14 +18,11 @@ while True:
     frame = frame[60:120, 0:160]
     hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
 
-    sendSize += link.tx_obj([7,0,0,180])
+    sendSize += link.tx_obj([0,0,4])
     link.send(sendSize)
-    sleep(1)
+    sleep(2)
     data = read_qr(detector,frame)
     if data is not None:
-        sendSize = 0
-        link.send([7,1,0,0])
-
         if data == "start/yellow":
             while True:
                 sendSize = 0
@@ -65,17 +62,24 @@ while True:
         elif data == "YELLOW ZONE":
             while True:
                 sendSize = 0
-                list_ = [7, 0, 0, 0]
+                list_ = [0, 0, 4]
                 sendSize += link.tx_obj(list_)
                 link.send(sendSize)
-                s = [5, 1, 255, 0]
+                sleep(2)
+                s = [70, 0, 2]
                 sendSize=0
                 sendSize += link.tx_obj(s)
+                link.send(sendSize)
+                sleep(2)
+                sendSize = 0
+                list_ = [0, 0, 4]
+                sendSize += link.tx_obj(list_)
                 link.send(sendSize)
                 contours, mask = yellow_mask(hsv)
                 frame, cx = get_contours(contours, frame)
                 if cx is not None:
                     s = get_motor_func(cx)
+                    sendSize=0
                     sendSize += link.tx_obj(s)
                     link.send(sendSize)
                 else:
@@ -85,10 +89,10 @@ while True:
         elif data == "RED ZONE":
             while True:
                 sendSize = 0
-                list_ = [7, 0, 0, 0]
+                list_ = [0, 0, 4]
                 sendSize += link.tx_obj(list_)
                 link.send(sendSize)
-                s = [5, 1, 255, 0]
+                s = [70, 0, 2]
                 sendSize=0
                 sendSize += link.tx_obj(s)
                 link.send(sendSize)
@@ -96,6 +100,7 @@ while True:
                 frame, cx = get_contours(contours, frame)
                 if cx is not None:
                     s = get_motor_func(cx)
+                    sendSize=0
                     sendSize += link.tx_obj(s)
                     link.send(sendSize)
                 else:
