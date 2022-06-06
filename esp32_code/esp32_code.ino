@@ -21,10 +21,10 @@ int interval = 1000;
 long previousMillis = 0;
 long currentMillis = 0;
 
-int enco1 = 17;
-int enco2 = 5;
-int enco3 = 18;
-int enco4 = 19;
+int enco1 = 17; // Motor AD
+int enco2 = 5; // Motor AG
+int enco3 = 18; // Motor DD
+int enco4 = 19; // Motor DG
 
 // Motor AD connections //
 int enA = 16;
@@ -120,13 +120,13 @@ void loop() {
     rpm2 = (float)(encoderValue2 * 60 / ENCODEROUTPUT);
     rpm3 = (float)(encoderValue3 * 60 / ENCODEROUTPUT);
     rpm4 = (float)(encoderValue4 * 60 / ENCODEROUTPUT);
-    Serial.print(rpm);
-    Serial.println(" RPM 1");
-    Serial.print(rpm);
-    Serial.println(" RPM 2");
-    Serial.print(rpm);
-    Serial.println(" RPM 3");
-    Serial.print(rpm);
+    Serial.print(rpm1);
+    Serial.println(" RPM 1 -- ");
+    Serial.print(rpm2);
+    Serial.println(" RPM 2 -- ");
+    Serial.print(rpm3);
+    Serial.println(" RPM 3 -- ");
+    Serial.print(rpm4);
     Serial.println(" RPM 4");
     encoderValue1 = 0;
     encoderValue2 = 0;
