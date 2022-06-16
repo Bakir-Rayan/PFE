@@ -1,7 +1,7 @@
 import qrcode 
 
-data=["BLUE ZONE", "RED ZONE", "YELLOW ZONE","start/blue", "start/red", "start/yellow"]
-img_name=["blue_zone.png", "red_zone.png", "yellow_zone.png", "blue_start.png", "red_start.png", "yellow_start.png"]
+data=["start","blue_zone","yellow_zone"]
+img_name=["start.png","blue_zone.png", "yellow_zone.png"]
 for d,n in zip(data,img_name):
     qr = qrcode.QRCode(
         version=1,
@@ -12,5 +12,5 @@ for d,n in zip(data,img_name):
     qr.add_data(d)
     qr.make(fit=True)
     img = qr.make_image(fill_color="black", back_color="white")
-    img.save(n)
+    img.save(f"./qrcodes/{n}")
     print("saved")
