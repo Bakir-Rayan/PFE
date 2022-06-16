@@ -19,7 +19,7 @@ while True :
     
     if path is None:
         try:
-            path = str(requests.get('http://127.0.0.1:5000/test').content.decode("utf-8"))
+            path = str(requests.get('http://127.0.0.1:8080/test').content.decode("utf-8"))
         except:
             print("no path found on the server")
 
@@ -40,14 +40,17 @@ while True :
     
 
     if running and (data is None):
-        frame = get_contours(contours, frame, pwm)
+        frame = get_contours(contours, frame)
     else:
         stop()
         if data == "yellow_zone":
+            print("yellow")
             path = "yellow"
         elif data == "blue_zone":
+            print("blue")
             path = "blue"
         elif data == "start":
+            print("start")
             path = None
             stop()
     

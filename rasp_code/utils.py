@@ -1,6 +1,7 @@
 import cv2 as cv
 import numpy as np
-import RPi.GPIO as GPIO  
+import RPi.GPIO as GPIO
+import PID  
 
 # motor pins
 # right front engine
@@ -46,6 +47,16 @@ PWM1=GPIO.PWM(enA,1000)
 PWM2=GPIO.PWM(enB,1000)
 PWM3=GPIO.PWM(enC,1000)
 PWM4=GPIO.PWM(enD,1000)
+
+# PID config
+targetcx = 80
+P = 1
+I = 0.8
+D = 0.5
+
+pid = PID.PID(P, I, D)
+pid.SetPoint = targetcx
+pid.setSampleTime(1)
     
 def blue_mask(hsv):
     lower_blue = np.array([100,100,50])
@@ -63,7 +74,7 @@ def yellow_mask(hsv):
     contours,hierarchy = cv.findContours(thresh.copy(), cv.RETR_CCOMP, cv.CHAIN_APPROX_NONE)
     return contours, mask_yellow
 
-def get_contours(contours, frame, pwm):
+def get_contours(contours, frame):
     if len(contours) > 0:
         C=max(contours, key=cv.contourArea)
         M = cv.moments(C)
@@ -72,13 +83,24 @@ def get_contours(contours, frame, pwm):
             cy = int(M['m01']/M['m00'])
             cv.circle(frame, (cx,cy), 5, (255,255,255), -1)
             if cx >= 110:
-                go_left(pwm)
+                go_left(speed(cx))
             elif cx < 110 and cx > 50:
-                go_forward(pwm)
+                go_forward(speed(cx))
             elif cx <= 50:
-                go_right(pwm)
+                go_right(speed(cx))
         cv.drawContours(frame, C, -1, (0,255,0), 1)
     return frame
+
+def speed(cx):
+    pid.update(cx)
+    pwm = pid.output
+    if pwm >= 100:
+        pwm = 90
+    elif pwm < 0:
+        pwm = abs(pwm)
+        if pwm >= 100:
+            pwm = 90
+    return pwm
 
 def stop():
     PWM1.stop()
@@ -90,7 +112,7 @@ def gpio_cleanup():
     GPIO.cleanup()
 
 def go_forward(pwm):
-    print("go forward")
+    print(f"going forward at: {pwm}")
     PWM1.start(pwm)
     PWM2.start(pwm)
     PWM3.start(pwm)
@@ -105,7 +127,7 @@ def go_forward(pwm):
     GPIO.output(in8,GPIO.LOW)
 
 def go_left(pwm):
-    print("go left")
+    print(f"going left at: {pwm}")
     PWM1.start(pwm)
     PWM2.start(pwm)
     PWM3.start(pwm)
@@ -120,7 +142,7 @@ def go_left(pwm):
     GPIO.output(in8,GPIO.HIGH)
 
 def go_right(pwm):
-    print("go right")
+    print(f"going right at: {pwm}")
     PWM1.start(pwm)
     PWM2.start(pwm)
     PWM3.start(pwm)
@@ -141,5 +163,6 @@ def read_qr(detector, img):
         return data
     else:
         return None
+
 
 
