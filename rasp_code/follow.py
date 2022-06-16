@@ -1,135 +1,58 @@
+import numpy as np
 import cv2 as cv
 from utils import *
-from time import sleep
-from pySerialTransfer import pySerialTransfer as txfer
+import requests
 
-cap = cv.VideoCapture(0)
-cap.set(3,160)
-cap.set(4,120)
+cap = cv.VideoCapture(-1)
+cap.set(3, 160)
+cap.set(4, 120)
+path = None
+
 detector = cv.QRCodeDetector()
-try:
-    link = txfer.SerialTransfer('/dev/ttyACM0')
-except:
-    link = txfer.SerialTransfer('/dev/ttyACM1')
-link.open()
-while True:
-    sendSize = 0
+data = None
+pwm=25
+runnnig=False
+while True :
     ret, frame = cap.read()
     frame = frame[60:120, 0:160]
     hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
-
-    sendSize += link.tx_obj([0,0,4])
-    link.send(sendSize)
-    sleep(2)
-    data = read_qr(detector,frame)
-    if data is not None:
-        if data == "start/yellow":
-            while True:
-                sendSize = 0
-                contours, mask = yellow_mask(hsv)
-                frame, cx = get_contours(contours, frame)
-                if cx is not None:
-                    s = get_motor_func(cx)
-                    sendSize += link.tx_obj(s)
-                    link.send(sendSize)
-                else:
-                    break
-
-        elif data == "start/red":
-            while True:
-                sendSize = 0
-                contours, mask = red_mask(hsv)
-                frame, cx = get_contours(contours, frame)
-                if cx is not None:
-                    s = get_motor_func(cx)
-                    sendSize += link.tx_obj(s)
-                    link.send(sendSize)
-                else:
-                    break
-
-        elif data == "start/blue":
-            while True:
-                sendSize = 0
-                contours, mask = blue_mask(hsv)
-                frame, cx = get_contours(contours, frame)
-                if cx is not None:
-                    s = get_motor_func(cx)
-                    sendSize += link.tx_obj(s)
-                    link.send(sendSize)
-                else:
-                    break
-
-        elif data == "YELLOW ZONE":
-            while True:
-                sendSize = 0
-                list_ = [0, 0, 4]
-                sendSize += link.tx_obj(list_)
-                link.send(sendSize)
-                sleep(2)
-                s = [70, 0, 2]
-                sendSize=0
-                sendSize += link.tx_obj(s)
-                link.send(sendSize)
-                sleep(2)
-                sendSize = 0
-                list_ = [0, 0, 4]
-                sendSize += link.tx_obj(list_)
-                link.send(sendSize)
-                contours, mask = yellow_mask(hsv)
-                frame, cx = get_contours(contours, frame)
-                if cx is not None:
-                    s = get_motor_func(cx)
-                    sendSize=0
-                    sendSize += link.tx_obj(s)
-                    link.send(sendSize)
-                else:
-                    break
-
-            
-        elif data == "RED ZONE":
-            while True:
-                sendSize = 0
-                list_ = [0, 0, 4]
-                sendSize += link.tx_obj(list_)
-                link.send(sendSize)
-                s = [70, 0, 2]
-                sendSize=0
-                sendSize += link.tx_obj(s)
-                link.send(sendSize)
-                contours, mask = red_mask(hsv)
-                frame, cx = get_contours(contours, frame)
-                if cx is not None:
-                    s = get_motor_func(cx)
-                    sendSize=0
-                    sendSize += link.tx_obj(s)
-                    link.send(sendSize)
-                else:
-                    break
-
-        elif data == "BLUE ZONE":
-            while True:
-                sendSize = 0
-                list_ = [7, 0, 0, 0]
-                sendSize += link.tx_obj(list_)
-                link.send(sendSize)
-                s = [5, 1, 255, 0]
-                sendSize=0
-                sendSize += link.tx_obj(s)
-                link.send(sendSize)
-                contours, mask = blue_mask(hsv)
-                frame, cx = get_contours(contours, frame)
-                if cx is not None:
-                    s = get_motor_func(cx)
-                    sendSize += link.tx_obj(s)
-                    link.send(sendSize)
-                else:
-                    break
     
-        
-    cv.namedWindow("Frame",cv.WINDOW_NORMAL)
-    cv.imshow("Frame",frame)
-    if cv.waitKey(1) == ord('q'):
+    if path is None:
+        try:
+            path = str(requests.get('http://127.0.0.1:5000/test').content.decode("utf-8"))
+        except:
+            print("no path found on the server")
+
+    if path == "yellow":
+        contours, mask = yellow_mask(hsv)
+        if contours:
+            running = True
+        else:
+            running = False
+            data = read_qr(detector, frame)
+    elif path == "blue":
+        contours, mask = blue_mask(hsv)
+        if contours:
+            running = True
+        else:
+            running = False
+            data = read_qr(detector, frame)
+    
+
+    if running and (data is None):
+        frame = get_contours(contours, frame, pwm)
+    else:
+        stop()
+        if data == "yellow_zone":
+            path = "yellow"
+        elif data == "blue_zone":
+            path = "blue"
+        elif data == "start":
+            path = None
+            stop()
+    
+    cv.imshow('frame',frame)
+    if cv.waitKey(1) & 0xFF == ord('q'):
+        stop()
+        gpio_cleanup()
         break
-    
-cap.release()
-cv.destroyAllWindows()
