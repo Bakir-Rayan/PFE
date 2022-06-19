@@ -3,7 +3,6 @@ import numpy as np
 import RPi.GPIO as GPIO
 import PID  
 
-# motor pins
 # right front engine
 enA = 23
 in1 = 25
@@ -100,6 +99,8 @@ def speed(cx):
         pwm = abs(pwm)
         if pwm >= 100:
             pwm = 90
+        elif pwm < 25:
+            pwm = 25
     return pwm
 
 def stop():
@@ -155,6 +156,20 @@ def go_right(pwm):
     GPIO.output(in6,GPIO.HIGH)
     GPIO.output(in7,GPIO.HIGH)
     GPIO.output(in8,GPIO.LOW)
+
+def rotation():
+    PWM1.start(32)
+    PWM2.start(32)
+    PWM3.start(32)
+    PWM4.start(32)
+    GPIO.output(in1,GPIO.HIGH)
+    GPIO.output(in2,GPIO.LOW)
+    GPIO.output(in3,GPIO.LOW)
+    GPIO.output(in4,GPIO.HIGH)
+    GPIO.output(in5,GPIO.HIGH)
+    GPIO.output(in6,GPIO.LOW)
+    GPIO.output(in7,GPIO.LOW)
+    GPIO.output(in8,GPIO.HIGH)
 
 def read_qr(detector, img):
     detector = detector

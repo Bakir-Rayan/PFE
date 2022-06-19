@@ -1,3 +1,4 @@
+from time import sleep
 import numpy as np
 import cv2 as cv
 from utils import *
@@ -6,12 +7,13 @@ import requests
 cap = cv.VideoCapture(-1)
 cap.set(3, 160)
 cap.set(4, 120)
-path = None
 
 detector = cv.QRCodeDetector()
+
+path = None
 data = None
-pwm=25
 runnnig=False
+
 while True :
     ret, frame = cap.read()
     frame = frame[60:120, 0:160]
@@ -46,9 +48,13 @@ while True :
         if data == "yellow_zone":
             print("yellow")
             path = "yellow"
+            rotation()
+            sleep(1)
         elif data == "blue_zone":
             print("blue")
             path = "blue"
+            rotation()
+            sleep(1)
         elif data == "start":
             print("start")
             path = None
