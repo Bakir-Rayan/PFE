@@ -157,20 +157,6 @@ def go_right(pwm):
     GPIO.output(in7,GPIO.HIGH)
     GPIO.output(in8,GPIO.LOW)
 
-def rotation():
-    PWM1.start(68)
-    PWM2.start(68)
-    PWM3.start(68)
-    PWM4.start(68)
-    GPIO.output(in1,GPIO.HIGH)
-    GPIO.output(in2,GPIO.LOW)
-    GPIO.output(in3,GPIO.LOW)
-    GPIO.output(in4,GPIO.HIGH)
-    GPIO.output(in5,GPIO.HIGH)
-    GPIO.output(in6,GPIO.LOW)
-    GPIO.output(in7,GPIO.LOW)
-    GPIO.output(in8,GPIO.HIGH)
-
 def read_qr(detector, img):
     detector = detector
     data, bbox, straight_qrcode = detector.detectAndDecode(img)

@@ -54,14 +54,10 @@ while True :
         if data == "yellow_zone":
             print("yellow path selected from QR code")
             path = "yellow"
-            rotation()
-            sleep(0.7)
             stop()
         elif data == "blue_zone":
             print("blue path selected from QR code")
             path = "blue"
-            rotation()
-            sleep(0.7)
             stop()
         elif data == "start":
             print("start - robot is waiting for path selection")
