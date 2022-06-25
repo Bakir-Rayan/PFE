@@ -82,11 +82,11 @@ def get_contours(contours, frame):
             cy = int(M['m01']/M['m00'])
             cv.circle(frame, (cx,cy), 5, (255,255,255), -1)
             if cx >= 110:
-                go_left(speed(cx))
+                go_right(speed(cx))
             elif cx < 110 and cx > 50:
                 go_forward(speed(cx))
             elif cx <= 50:
-                go_right(speed(cx))
+                go_left(speed(cx))
         cv.drawContours(frame, C, -1, (0,255,0), 1)
     return frame
 
