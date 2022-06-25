@@ -93,14 +93,14 @@ def get_contours(contours, frame):
 def speed(cx):
     pid.update(cx)
     pwm = pid.output
-    if pwm >= 100:
+    if pwm >= 90:
         pwm = 90
     elif pwm < 0:
         pwm = abs(pwm)
         if pwm >= 100:
             pwm = 90
-        elif pwm < 25:
-            pwm = 25
+    if pwm < 25:
+        pwm = 65
     return pwm
 
 def stop():
@@ -158,10 +158,10 @@ def go_right(pwm):
     GPIO.output(in8,GPIO.LOW)
 
 def rotation():
-    PWM1.start(32)
-    PWM2.start(32)
-    PWM3.start(32)
-    PWM4.start(32)
+    PWM1.start(68)
+    PWM2.start(68)
+    PWM3.start(68)
+    PWM4.start(68)
     GPIO.output(in1,GPIO.HIGH)
     GPIO.output(in2,GPIO.LOW)
     GPIO.output(in3,GPIO.LOW)

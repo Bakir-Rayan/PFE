@@ -6,7 +6,7 @@ import requests
 
 cap = cv.VideoCapture(-1)
 cap.set(3, 160)
-cap.set(4, 120)
+cap.set(4, 140)
 
 detector = cv.QRCodeDetector()
 
@@ -16,14 +16,19 @@ runnnig=False
 
 while True :
     ret, frame = cap.read()
-    frame = frame[60:120, 0:160]
+    frame = frame[60:140, 0:160]
     hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
     
     if path is None:
         try:
             path = str(requests.get('http://127.0.0.1:8080/test').content.decode("utf-8"))
+            if len(path) > 0:
+                print(f"Path selected is {path}")
+            else:
+                print("No path selected")
         except:
             print("no path found on the server")
+            path = None
 
     if path == "yellow":
         contours, mask = yellow_mask(hsv)
@@ -45,18 +50,21 @@ while True :
         frame = get_contours(contours, frame)
     else:
         stop()
+        data = read_qr(detector, frame)
         if data == "yellow_zone":
-            print("yellow")
+            print("yellow path selected from QR code")
             path = "yellow"
             rotation()
-            sleep(1)
+            sleep(0.7)
+            stop()
         elif data == "blue_zone":
-            print("blue")
+            print("blue path selected from QR code")
             path = "blue"
             rotation()
-            sleep(1)
+            sleep(0.7)
+            stop()
         elif data == "start":
-            print("start")
+            print("start - robot is waiting for path selection")
             path = None
             stop()
     
